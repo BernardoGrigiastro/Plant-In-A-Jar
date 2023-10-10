@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import io.github.cottonmc.cotton.gui.*;
 import io.github.cottonmc.cotton.gui.widget.*;
+import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.entity.BlockEntity;
@@ -18,6 +19,7 @@ public class JarGuiDescription extends SyncedGuiDescription {
         super(PlantInAJar.EPIC_SCREEN_HAND_YES, syncId, playerInventory, getBlockInventory1(context, 2), getBlockPropertyDelegate(context));
 
         WGridPanel root = new WGridPanel();
+		root.setInsets(Insets.ROOT_PANEL);
         setRootPanel(root);
         WItemSlot itemSlot = WItemSlotHack.of1(blockInventory, 0);
         root.add(itemSlot, 4, 1);
@@ -35,7 +37,7 @@ public class JarGuiDescription extends SyncedGuiDescription {
 	}
 
 	private static Inventory getBlockInventory2(ScreenHandlerContext ctx, Supplier<Inventory> fallback) {
-		return ctx.run((world, pos) -> {
+		return ctx.get((world, pos) -> {
 			BlockState state = world.getBlockState(pos);
 			// Block b = state.getBlock();
 

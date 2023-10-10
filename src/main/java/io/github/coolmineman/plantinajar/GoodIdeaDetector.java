@@ -1,11 +1,13 @@
 package io.github.coolmineman.plantinajar;
 
-import alexiil.mc.lib.attributes.fluid.mixin.api.IBucketItem;
-import net.minecraft.block.AttachedStemBlock;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.block.BambooBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CactusBlock;
+import net.minecraft.block.CoralBlockBlock;
+import net.minecraft.block.CoralParentBlock;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.NetherWartBlock;
 import net.minecraft.block.PlantBlock;
@@ -36,7 +38,7 @@ public class GoodIdeaDetector {
         if (i.getItem().equals(Items.WEEPING_VINES) || i.getItem().equals(Items.TWISTING_VINES)) {
             return true;
         }
-        if (block.getBlock().isIn(BlockTags.FLOWERS)) {
+        if (block.isIn(BlockTags.FLOWERS)) {
             return true;
         }
         if (block.getBlock() instanceof PlantBlock) {
@@ -48,7 +50,7 @@ public class GoodIdeaDetector {
         if (block.isOf(Blocks.COCOA)) {
             return true;
         }
-        if (block.isOf(Blocks.SEAGRASS) || block.isOf(Blocks.KELP) || block.isOf(Blocks.SEA_PICKLE)) {
+        if (block.isOf(Blocks.SEAGRASS) || block.isOf(Blocks.KELP) || block.isOf(Blocks.SEA_PICKLE) || block.getBlock() instanceof CoralParentBlock || block.getBlock() instanceof CoralBlockBlock) {
             return true;
         }
         if (block.isOf(Blocks.LILY_PAD)) {
@@ -57,15 +59,16 @@ public class GoodIdeaDetector {
         if (block.getBlock() instanceof CropBlock || block.getBlock() instanceof NetherWartBlock) {
             return true;
         }
-        if (JarBlockEntity.isTree(block) ||
-                    block.getBlock() instanceof CactusBlock || 
-                    block.getBlock() instanceof BambooBlock || 
-                    block.getBlock() instanceof SugarCaneBlock ||
-                    block.isOf(Blocks.RED_MUSHROOM) ||
-                    block.isOf(Blocks.BROWN_MUSHROOM) ||
-                    block.getBlock() instanceof SproutsBlock ||
-                    block.getBlock() instanceof RootsBlock
-                ) {
+        if (
+            block.getBlock() instanceof GrowsMultiblockPlantBlock ||
+            block.getBlock() instanceof CactusBlock || 
+            block.getBlock() instanceof BambooBlock || 
+            block.getBlock() instanceof SugarCaneBlock ||
+            block.isOf(Blocks.RED_MUSHROOM) ||
+            block.isOf(Blocks.BROWN_MUSHROOM) ||
+            block.getBlock() instanceof SproutsBlock ||
+            block.getBlock() instanceof RootsBlock
+        ) {
             return true;
         }
 
@@ -76,7 +79,7 @@ public class GoodIdeaDetector {
         if (isGoodIdeaPlant(i)) {
             return false;
         }
-        if (i.getItem() instanceof IBucketItem) return true;
+        if (FluidStorage.ITEM.find(i, ContainerItemContext.withInitial(i)) != null) return true;
         BlockState block;
         try {
             block = ((BlockItem)i.getItem()).getBlock().getDefaultState();

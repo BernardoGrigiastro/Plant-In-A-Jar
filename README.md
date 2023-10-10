@@ -1,4 +1,12 @@
-# Fabric Example Mod
+# Plant In A Jar
+
+[https://www.curseforge.com/minecraft/mc-mods/plant-in-a-jar](https://www.curseforge.com/minecraft/mc-mods/plant-in-a-jar)
+
+![Showcase](./showcase.png)
+
+## Discord
+
+[![Join The Discord](https://discordapp.com/api/guilds/844335788384452619/widget.png?style=banner2)](https://discord.gg/ZfNH3BUVth)
 
 ## Setup
 

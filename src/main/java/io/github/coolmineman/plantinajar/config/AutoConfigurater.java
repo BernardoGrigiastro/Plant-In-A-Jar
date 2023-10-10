@@ -1,24 +1,22 @@
 package io.github.coolmineman.plantinajar.config;
 
-import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigManager;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
+import com.google.gson.annotations.Expose;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-@Config(name = "plantinajar")
-public class AutoConfigurater implements ConfigData {
+public class AutoConfigurater {
     boolean dropItems = true;
-    int growthTime = 10;
-    @ConfigEntry.Gui.Excluded
-    HashMap<String, Integer> perItemGrowthTimes = new HashMap<>();
-    @ConfigEntry.Gui.Excluded
-    HashMap<String, Integer> growthModifierRegexPatterns = new HashMap<>();
+    int growthTime = 30;
+    ConcurrentHashMap<String, Integer> perItemGrowthTimes = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, Integer> growthModifierRegexPatterns = new ConcurrentHashMap<>();
+    Set<String> blackList = ConcurrentHashMap.newKeySet();
+    @Expose(serialize = false, deserialize = false)
+    public Set<String> forceBlackList = ConcurrentHashMap.newKeySet();
 
     public boolean shouldDropItems() {
         return this.dropItems;
@@ -31,7 +29,7 @@ public class AutoConfigurater implements ConfigData {
             needsResave = true;
         }
         Integer perItemGrowthTime = perItemGrowthTimes.computeIfAbsent(i.toString(), k -> -1);
-        if (needsResave) ((ConfigManager)AutoConfig.getConfigHolder(AutoConfigurater.class)).save();
+        if (needsResave) ConfigHolder.INSTANCE.save();
         int result = perItemGrowthTime;
         if (result <= 0) result = growthTime;
         result += RegexComputation.getGrowthModifier(i.toString());
@@ -39,10 +37,11 @@ public class AutoConfigurater implements ConfigData {
         return result;
     }
 
-    @Override
-    public void validatePostLoad() throws ValidationException {
-        ConfigData.super.validatePostLoad();
+    public void postLoad() {
         RegexComputation.init(growthModifierRegexPatterns);
     }
 
+    public boolean isBlacklisted(String blockId) {
+        return blackList.contains(blockId) || forceBlackList.contains(blockId);
+    }
 }
